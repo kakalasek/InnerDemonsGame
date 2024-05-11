@@ -42,6 +42,9 @@ function love.load()
             table.insert(letterObjects, letterObject)
         end
     end
+
+    letterTexts = {"First letter", "Second letter", "Third letter", "Fourth letter", "Fifth letter", "Sixth letter", "Seventh letter", "Eight letter", "Nineth letter"}
+
 end
 
 -- special love function which is called repeatedly
@@ -73,7 +76,7 @@ function love.draw()
             love.graphics.setColor(255, 255, 255, .8)
             love.graphics.rectangle("fill", 100, 30, love.graphics.getWidth() - 200, love.graphics.getHeight() - 60)
             love.graphics.setColor(255, 255, 255, 1)
-            love.graphics.printf({{0, 0, 0}, "Sample text"}, 100, 30, love.graphics.getWidth() - 200, 'left')
+            love.graphics.printf({{0, 0, 0}, letterTexts[i]}, 100, 30, love.graphics.getWidth() - 200, 'left')
         end
     end
 end

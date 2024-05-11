@@ -16,7 +16,7 @@ function Player:new() -- constructor for the Player object
                                                                                                                     -- this object adds gravity to the game
     self.collider:setFixedRotation(true) -- since we have a 2D game, we dont want our collider to rotate
 
-    self.speed = 200 -- sets the speed of our player
+    self.speed = 1000 -- sets the speed of our player      *(was 200)*
 
     self.spriteSheet = love.graphics.newImage('textures/player-sheet.png')  -- load our spirtesheet into a property AKA variable AKA to hell with OOP
 
