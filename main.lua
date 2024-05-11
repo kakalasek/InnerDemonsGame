@@ -13,12 +13,16 @@ function love.load()
     love.graphics.setDefaultFilter("nearest", "nearest")    -- does something important I presume .. althought I dont know what .. Imma leave it here tho
 
     world = wf.newWorld(0, 100) -- creates a ned windfield world and sets the strength of its gravity
+    world:addCollisionClass('Solid')
+    world:addCollisionClass('Ghost', {ignores = {'Solid'}})
 
     gameMap = sti('maps/GameMap.lua')  -- loads the game map (it is created using tiled, which can export the map into lua code, so it can be used here)
 
     require "player"    -- loads our player code onto here .. it is important to require it right here, because it uses the libraries above
+    require "enemy"     -- loads our enemy code onto here .. it is important to require it right here, because it uses the libraries above and also need the player object to be created
 
     player = Player()   -- creates the player object
+    enemy = Enemy()     -- create the enemy object
 
     -- will load the colliders created in tiled into our real map
     solidObjects = {}
@@ -26,6 +30,7 @@ function love.load()
         for i, obj in pairs(gameMap.layers["SolidObjects"].objects) do
             local solidObject = world:newRectangleCollider(obj.x, obj.y, obj.width, obj.height)
             solidObject:setType('static')
+            solidObject:setCollisionClass('Solid')
             table.insert(solidObjects, solidObject)
         end
     end
@@ -34,7 +39,8 @@ function love.load()
     if gameMap.layers["LettersObjects"] then
         for i, obj in pairs(gameMap.layers["LettersObjects"].objects) do
             local letterObject = world:newRectangleCollider(obj.x, obj.y, obj.width, obj.height)
-            letterObject:setType('ghost')
+            letterObject:setType('static')
+            letterObject:setCollisionClass('Ghost')
             letterObject.x = obj.x
             letterObject.y = obj.y
             letterObject.width = obj.width
@@ -52,13 +58,16 @@ end
 function love.update(dt)
     world:update(dt)
     player:update(dt)
+    enemy:update(dt)
     cam:lookAt(player.x, player.y)
+
 end
 
 -- special love function which is called repeatedly
 -- draws everything on the screen
 function love.draw()
     cam:attach()
+        world:draw() -- for debugging
         gameMap:drawLayer(gameMap.layers['Background'])
         gameMap:drawLayer(gameMap.layers['Trees'])
         gameMap:drawLayer(gameMap.layers['Bushes'])
@@ -69,14 +78,19 @@ function love.draw()
         gameMap:drawLayer(gameMap.layers['Building'])
         gameMap:drawLayer(gameMap.layers['Ground'])
         player:draw()
+        enemy:draw()
     cam:detach()
 
+
+    -- Used to render a letter on the screen, when the player passes around it
+    -- It is called outside the camera:attach() because we want it move with the player
     for i, obj in pairs(letterObjects) do
-        if (player.x >= obj.x and player.x <= obj.x + obj.width) and (player.y >= obj.y and player.y <= obj.y + obj.height) then
-            love.graphics.setColor(255, 255, 255, .8)
+        if (player.x >= obj.x and player.x <= obj.x + obj.width) and (player.y >= obj.y and player.y <= obj.y + obj.height) then -- checking if the player collides with any of the letter ghost colliders
+            love.graphics.setColor(255, 255, 255, .8)   -- setting the color of background for the letter and adjusting alpha value, so it will be a little transparent
             love.graphics.rectangle("fill", 100, 30, love.graphics.getWidth() - 200, love.graphics.getHeight() - 60)
-            love.graphics.setColor(255, 255, 255, 1)
-            love.graphics.printf({{0, 0, 0}, letterTexts[i]}, 100, 30, love.graphics.getWidth() - 200, 'left')
+            love.graphics.setColor(255, 255, 255, 1)    -- setting back the default alpha value, so only the background of the letter becomes transparent
+            love.graphics.printf({{0, 0, 0}, letterTexts[i]}, 100, 30, love.graphics.getWidth() - 200, 'left') -- printing the letter onto the background
+                                                                                                               -- thanks to this function, the text will wrap itself .. also we are getting the texts from external files
         end
     end
 end

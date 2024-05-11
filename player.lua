@@ -14,6 +14,7 @@ function Player:new() -- constructor for the Player object
     -- creating a collider for the player
     self.collider = world:newRectangleCollider(100, 360, self.animWidth * self.scale, self.animHeight * self.scale) -- 'world' is an object created with the windfield library
                                                                                                                     -- this object adds gravity to the game
+    self.collider:setCollisionClass('Solid')
     self.collider:setFixedRotation(true) -- since we have a 2D game, we dont want our collider to rotate
 
     self.speed = 1000 -- sets the speed of our player      *(was 200)*
