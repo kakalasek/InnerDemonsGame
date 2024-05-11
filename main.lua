@@ -21,7 +21,7 @@ function love.load()
     player = Player()   -- creates the player object
 
     -- will load the colliders created in tiled into our real map
-    solidObjects = {}   -- 
+    solidObjects = {}
     if gameMap.layers["SolidObjects"] then
         for i, obj in pairs(gameMap.layers["SolidObjects"].objects) do
             local solidObject = world:newRectangleCollider(obj.x, obj.y, obj.width, obj.height)
@@ -35,6 +35,10 @@ function love.load()
         for i, obj in pairs(gameMap.layers["LettersObjects"].objects) do
             local letterObject = world:newRectangleCollider(obj.x, obj.y, obj.width, obj.height)
             letterObject:setType('ghost')
+            letterObject.x = obj.x
+            letterObject.y = obj.y
+            letterObject.width = obj.width
+            letterObject.height = obj.height
             table.insert(letterObjects, letterObject)
         end
     end
@@ -63,4 +67,13 @@ function love.draw()
         gameMap:drawLayer(gameMap.layers['Ground'])
         player:draw()
     cam:detach()
+
+    for i, obj in pairs(letterObjects) do
+        if (player.x >= obj.x and player.x <= obj.x + obj.width) and (player.y >= obj.y and player.y <= obj.y + obj.height) then
+            love.graphics.setColor(255, 255, 255, .8)
+            love.graphics.rectangle("fill", 100, 30, love.graphics.getWidth() - 200, love.graphics.getHeight() - 60)
+            love.graphics.setColor(255, 255, 255, 1)
+            love.graphics.printf({{0, 0, 0}, "Sample text"}, 100, 30, love.graphics.getWidth() - 200, 'left')
+        end
+    end
 end
