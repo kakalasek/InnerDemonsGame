@@ -54,8 +54,8 @@ function love.load()
 
     gameState = {
         menuScreen = false,
-        runningScreen = false,
-        deathScreen = true
+        runningScreen = true,
+        deathScreen = false
     }
 end
 
