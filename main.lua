@@ -14,7 +14,7 @@ function love.load()
 
     world = wf.newWorld(0, 100) -- creates a ned windfield world and sets the strength of its gravity
 
-    gameMap = sti('maps/SixthMap.lua')  -- loads the game map (it is created using tiled, which can export the map into lua code, so it can be used here)
+    gameMap = sti('maps/GameMap.lua')  -- loads the game map (it is created using tiled, which can export the map into lua code, so it can be used here)
 
     require "player"    -- loads our player code onto here .. it is important to require it right here, because it uses the libraries above
 
@@ -30,6 +30,14 @@ function love.load()
         end
     end
 
+    letterObjects = {}
+    if gameMap.layers["LettersObjects"] then
+        for i, obj in pairs(gameMap.layers["LettersObjects"].objects) do
+            local letterObject = world:newRectangleCollider(obj.x, obj.y, obj.width, obj.height)
+            letterObject:setType('ghost')
+            table.insert(letterObjects, letterObject)
+        end
+    end
 end
 
 -- special love function which is called repeatedly
