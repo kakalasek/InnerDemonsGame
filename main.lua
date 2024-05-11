@@ -13,8 +13,8 @@ function love.load()
     love.graphics.setDefaultFilter("nearest", "nearest")    -- does something important I presume .. althought I dont know what .. Imma leave it here tho
 
     world = wf.newWorld(0, 100) -- creates a ned windfield world and sets the strength of its gravity
-    world:addCollisionClass('Solid')
-    world:addCollisionClass('Ghost', {ignores = {'Solid'}})
+    world:addCollisionClass('Solid') -- adds a collision class for solid objects
+    world:addCollisionClass('Ghost', {ignores = {'Solid'}}) -- adds a collision class for abstract objects 
 
     gameMap = sti('maps/GameMap.lua')  -- loads the game map (it is created using tiled, which can export the map into lua code, so it can be used here)
 
@@ -25,9 +25,9 @@ function love.load()
     enemy = Enemy()     -- create the enemy object
 
     -- will load the colliders created in tiled into our real map
-    solidObjects = {}
-    if gameMap.layers["SolidObjects"] then
-        for i, obj in pairs(gameMap.layers["SolidObjects"].objects) do
+    solidObjects = {}   -- just to keep track of all solid walls and stuff
+    if gameMap.layers["SolidObjects"] then  -- checking if this layer exists in the map
+        for i, obj in pairs(gameMap.layers["SolidObjects"].objects) do  -- adds a solid collier to every object in the SolidObjects layer
             local solidObject = world:newRectangleCollider(obj.x, obj.y, obj.width, obj.height)
             solidObject:setType('static')
             solidObject:setCollisionClass('Solid')
@@ -35,12 +35,13 @@ function love.load()
         end
     end
 
-    letterObjects = {}
-    if gameMap.layers["LettersObjects"] then
-        for i, obj in pairs(gameMap.layers["LettersObjects"].objects) do
+    letterObjects = {} -- just to keep track of all letter colliders
+    if gameMap.layers["LettersObjects"] then    -- checking if this layer exists in the map
+        for i, obj in pairs(gameMap.layers["LettersObjects"].objects) do -- adds an abstract collider to every object in the LettersObjects layer
             local letterObject = world:newRectangleCollider(obj.x, obj.y, obj.width, obj.height)
             letterObject:setType('static')
             letterObject:setCollisionClass('Ghost')
+            -- letterObject itself does not hold any information about its position or dimensions .. since it is just a table, I can store them in it like this
             letterObject.x = obj.x
             letterObject.y = obj.y
             letterObject.width = obj.width
