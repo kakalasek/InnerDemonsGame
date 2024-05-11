@@ -52,46 +52,58 @@ function love.load()
 
     letterTexts = {"First letter", "Second letter", "Third letter", "Fourth letter", "Fifth letter", "Sixth letter", "Seventh letter", "Eight letter", "Nineth letter"}
 
+    gameState = {
+        menuScreen = false,
+        runningScreen = true,
+        deathScreen = false
+    }
 end
 
 -- special love function which is called repeatedly
 -- updates everything before it gets drawn
 function love.update(dt)
-    world:update(dt)
-    player:update(dt)
-    enemy:update(dt)
-    cam:lookAt(player.x, player.y)
+    if gameState.menuScreen then 
+    elseif gameState.runningScreen then
+        world:update(dt)
+        player:update(dt)
+        enemy:update(dt)
+        cam:lookAt(player.x, player.y)
+    elseif gameState.deathScreen then
+    end
 
 end
 
 -- special love function which is called repeatedly
 -- draws everything on the screen
 function love.draw()
-    cam:attach()
-        world:draw() -- for debugging
-        gameMap:drawLayer(gameMap.layers['Background'])
-        gameMap:drawLayer(gameMap.layers['Trees'])
-        gameMap:drawLayer(gameMap.layers['Bushes'])
-        gameMap:drawLayer(gameMap.layers['Props'])
-        gameMap:drawLayer(gameMap.layers['Letters'])
-        gameMap:drawLayer(gameMap.layers['Wheat'])
-        gameMap:drawLayer(gameMap.layers['Grass'])
-        gameMap:drawLayer(gameMap.layers['Building'])
-        gameMap:drawLayer(gameMap.layers['Ground'])
-        player:draw()
-        enemy:draw()
-    cam:detach()
+    if gameState.menuScreen then
+    elseif gameState.runningScreen then
+        cam:attach()
+            gameMap:drawLayer(gameMap.layers['Background'])
+            gameMap:drawLayer(gameMap.layers['Trees'])
+            gameMap:drawLayer(gameMap.layers['Bushes'])
+            gameMap:drawLayer(gameMap.layers['Props'])
+            gameMap:drawLayer(gameMap.layers['Letters'])
+            gameMap:drawLayer(gameMap.layers['Wheat'])
+            gameMap:drawLayer(gameMap.layers['Grass'])
+            gameMap:drawLayer(gameMap.layers['Building'])
+            gameMap:drawLayer(gameMap.layers['Ground'])
+            player:draw()
+            enemy:draw()
+        cam:detach()
 
 
-    -- Used to render a letter on the screen, when the player passes around it
-    -- It is called outside the camera:attach() because we want it move with the player
-    for i, obj in pairs(letterObjects) do
-        if (player.x >= obj.x and player.x <= obj.x + obj.width) and (player.y >= obj.y and player.y <= obj.y + obj.height) then -- checking if the player collides with any of the letter ghost colliders
-            love.graphics.setColor(255, 255, 255, .8)   -- setting the color of background for the letter and adjusting alpha value, so it will be a little transparent
-            love.graphics.rectangle("fill", 100, 30, love.graphics.getWidth() - 200, love.graphics.getHeight() - 60)
-            love.graphics.setColor(255, 255, 255, 1)    -- setting back the default alpha value, so only the background of the letter becomes transparent
-            love.graphics.printf({{0, 0, 0}, letterTexts[i]}, 100, 30, love.graphics.getWidth() - 200, 'left') -- printing the letter onto the background
-                                                                                                               -- thanks to this function, the text will wrap itself .. also we are getting the texts from external files
+        -- Used to render a letter on the screen, when the player passes around it
+        -- It is called outside the camera:attach() because we want it move with the player
+        for i, obj in pairs(letterObjects) do
+            if (player.x >= obj.x and player.x <= obj.x + obj.width) and (player.y >= obj.y and player.y <= obj.y + obj.height) then -- checking if the player collides with any of the letter ghost colliders
+                love.graphics.setColor(255, 255, 255, .8)   -- setting the color of background for the letter and adjusting alpha value, so it will be a little transparent
+                love.graphics.rectangle("fill", 100, 30, love.graphics.getWidth() - 200, love.graphics.getHeight() - 60)
+                love.graphics.setColor(255, 255, 255, 1)    -- setting back the default alpha value, so only the background of the letter becomes transparent
+                love.graphics.printf({{0, 0, 0}, letterTexts[i]}, 100, 30, love.graphics.getWidth() - 200, 'left')  -- printing the letter onto the background
+                                                                                                                    -- thanks to this function, the text will wrap itself .. also we are getting the texts from external files
+            end
         end
+    elseif gameState.deathScreen then
     end
 end
