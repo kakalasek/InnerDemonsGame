@@ -54,8 +54,8 @@ function love.load()
 
     gameState = {
         menuScreen = false,
-        runningScreen = true,
-        deathScreen = false
+        runningScreen = false,
+        deathScreen = true
     }
 end
 
@@ -69,6 +69,9 @@ function love.update(dt)
         enemy:update(dt)
         cam:lookAt(player.x, player.y)
     elseif gameState.deathScreen then
+        if love.keyboard.isDown('e') then
+            love.event.quit('restart')
+        end
     end
 
 end
@@ -105,5 +108,6 @@ function love.draw()
             end
         end
     elseif gameState.deathScreen then
+        love.graphics.print("GAME OVER")
     end
 end
