@@ -21,16 +21,19 @@ function love.load()
     gameMap = sti('maps/GameMap.lua')  -- loads the game map (it is created using tiled, which can export the map into lua code, so it can be used here)
     
     gameState = {
-        menuScreen = false,
-        runningScreen = true,
+        menuScreen = true,
+        runningScreen = false,
         deathScreen = false
     }
 
     require "player"    -- loads our player code onto here .. it is important to require it right here, because it uses the libraries above
     require "enemy"     -- loads our enemy code onto here .. it is important to require it right here, because it uses the libraries above and also need the player object to be created
+    require "button"
+    require "menu"
 
     player = Player()   -- creates the player object
     enemy = Enemy()     -- create the enemy object
+    menu = Menu()
 
     -- will load the colliders created in tiled into our real map
     solidObjects = {}   -- just to keep track of all solid walls and stuff
@@ -66,7 +69,8 @@ end
 -- special love function which is called repeatedly
 -- updates everything before it gets drawn
 function love.update(dt)
-    if gameState.menuScreen then 
+    if gameState.menuScreen then
+        menu:update(dt)
     elseif gameState.runningScreen then
         world:update(dt)
         player:update(dt)
@@ -84,7 +88,8 @@ end
 -- draws everything on the screen
 function love.draw()
     if gameState.menuScreen then
-    elseif gameState.runningScreen then
+        menu:draw()
+    elseif gameState.runningScreen and player.x then
         cam:attach()
             gameMap:drawLayer(gameMap.layers['Background'])
             gameMap:drawLayer(gameMap.layers['Trees'])
@@ -103,7 +108,11 @@ function love.draw()
         -- Used to render a letter on the screen, when the player passes around it
         -- It is called outside the camera:attach() because we want it move with the player
         for i, obj in pairs(letterObjects) do
-            if (player.x >= obj.x and player.x <= obj.x + obj.width) and (player.y >= obj.y and player.y <= obj.y + obj.height) then -- checking if the player collides with any of the letter ghost colliders
+
+            if (player.x >= obj.x 
+            and player.x <= obj.x + obj.width) 
+            and (player.y >= obj.y 
+            and player.y <= obj.y + obj.height) then -- checking if the player collides with any of the letter ghost colliders
                 love.graphics.setColor(255, 255, 255, .8)   -- setting the color of background for the letter and adjusting alpha value, so it will be a little transparent
                 love.graphics.rectangle("fill", 100, 30, love.graphics.getWidth() - 200, love.graphics.getHeight() - 60)
                 love.graphics.setColor(255, 255, 255, 1)    -- setting back the default alpha value, so only the background of the letter becomes transparent
