@@ -8,8 +8,8 @@ function Enemy:new()    -- constructor for the Enemy object
     self.width = 20
     self.height = 20
 
-    self.collider = world:newRectangleCollider(160, 360, self.width, self.height)
-    self.collider:setCollisionClass('Solid')
+    self.collider = world:newRectangleCollider(350, 360, self.width, self.height)
+    self.collider:setCollisionClass('Enemy')
     self.collider:setFixedRotation(true)
 
     self.x = self.collider:getX()
@@ -34,6 +34,11 @@ function Enemy:update(dt)
     -- sets the x and y postion of the enemy according to its collider
     self.x = self.collider:getX()
     self.y = self.collider:getY()
+
+    if self.collider:enter('Player') then
+        gameState.deathScreen = true
+        gameState.runningScreen = false
+    end
 end
 
 -- draw function for the Enemy object
