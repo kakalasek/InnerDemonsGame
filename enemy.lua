@@ -3,12 +3,12 @@
 
 Enemy = Object:extend() -- creates the enemey object
 
-function Enemy:new()    -- constructor for the Enemy object
+function Enemy:new(x, y)    -- constructor for the Enemy object
     -- setting the dimensions for the enemy
     self.width = 20
     self.height = 20
 
-    self.collider = world:newRectangleCollider(350, 360, self.width, self.height)
+    self.collider = world:newRectangleCollider(x, y, self.width, self.height)
     self.collider:setCollisionClass('Enemy')
     self.collider:setFixedRotation(true)
 

@@ -26,13 +26,17 @@ function love.load()
         deathScreen = false
     }
 
+    enemies = {}
+    bullets = {}
+
     require "player"    -- loads our player code onto here .. it is important to require it right here, because it uses the libraries above
     require "enemy"     -- loads our enemy code onto here .. it is important to require it right here, because it uses the libraries above and also need the player object to be created
     require "button"
+    require "bullet"
     require "menu"
 
     player = Player()   -- creates the player object
-    enemy = Enemy()     -- create the enemy object
+
     menu = Menu()
 
     -- will load the colliders created in tiled into our real map
@@ -74,7 +78,23 @@ function love.update(dt)
     elseif gameState.runningScreen then
         world:update(dt)
         player:update(dt)
-        enemy:update(dt)
+        
+        for i, enemy in pairs(enemies) do
+            enemy:update()
+        end
+
+        for i, bullet in pairs(bullets) do
+            bullet:update()
+            
+            if math.abs(bullet.x - bullet.starting_x) == bullet.disappear or math.abs(bullet.y - bullet.starting_y) == bullet.disappear then
+                table.remove(bullets, i)
+            end
+        end
+
+        if love.mouse.isDown(1) then
+            table.insert(bullets, Bullet(player.x, player.y, 20))
+        end
+
         cam:lookAt(player.x, player.y)
     elseif gameState.deathScreen then
         if love.keyboard.isDown('e') then
@@ -101,7 +121,15 @@ function love.draw()
             gameMap:drawLayer(gameMap.layers['Building'])
             gameMap:drawLayer(gameMap.layers['Ground'])
             player:draw()
-            enemy:draw()
+
+            for i, enemy in ipairs(enemies) do
+                enemy:draw()
+            end
+
+            for i, bullet in ipairs(bullets) do
+                bullet:draw()
+            end
+
         cam:detach()
 
 
