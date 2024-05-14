@@ -26,6 +26,8 @@ function love.load()
         deathScreen = false
     }
 
+    bullet_delay = 60
+
     enemies = {}
     bullets = {}
 
@@ -78,21 +80,33 @@ function love.update(dt)
     elseif gameState.runningScreen then
         world:update(dt)
         player:update(dt)
+
+        if bullet_delay ~= 0 then bullet_delay = bullet_delay - 1 end
         
         for i, enemy in pairs(enemies) do
-            enemy:update()
+            enemy:update(dt)
         end
 
         for i, bullet in pairs(bullets) do
-            bullet:update()
+            bullet:update(dt)
             
-            if math.abs(bullet.x - bullet.starting_x) == bullet.disappear or math.abs(bullet.y - bullet.starting_y) == bullet.disappear then
+            if math.abs(bullet.x - bullet.starting_x) >= bullet.disappear or math.abs(bullet.y - bullet.starting_y) >= bullet.disappear then
                 table.remove(bullets, i)
             end
         end
 
-        if love.mouse.isDown(1) then
-            table.insert(bullets, Bullet(player.x, player.y, 20))
+        if love.mouse.isDown(1) and bullet_delay == 0 then
+            local mouse_x, mouse_y = cam:mousePosition()
+
+            local angle = math.atan2((mouse_y - player.y), (mouse_x - player.x))
+
+            local velocity_x = 300 * math.cos(angle)
+
+            local velocity_y = 300 * math.sin(angle)
+
+            table.insert(bullets, Bullet(player.x, player.y, velocity_x, velocity_y))
+
+            bullet_delay = bullet_delay + 60
         end
 
         cam:lookAt(player.x, player.y)
@@ -125,15 +139,13 @@ function love.draw()
             for i, enemy in ipairs(enemies) do
                 enemy:draw()
             end
-
+                
             for i, bullet in ipairs(bullets) do
                 bullet:draw()
             end
-
         cam:detach()
 
-
-        -- Used to render a letter on the screen, when the player passes around it
+                    -- Used to render a letter on the screen, when the player passes around it
         -- It is called outside the camera:attach() because we want it move with the player
         for i, obj in pairs(letterObjects) do
 
