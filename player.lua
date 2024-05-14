@@ -19,7 +19,7 @@ function Player:new() -- constructor for the Player object
 
     self.speed = 1000 -- sets the speed of our player      *(was 200)*
 
-    self.spriteSheet = love.graphics.newImage('textures/player-sheet.png')  -- load our spirtesheet into a property AKA variable AKA to hell with OOP
+    self.spriteSheet = love.graphics.newImage('textures/better-player-sheet.png')  -- load our spirtesheet into a property AKA variable AKA to hell with OOP
 
     self.grid = anim8.newGrid(self.animWidth, self.animHeight, self.spriteSheet:getWidth(), self.spriteSheet:getHeight()) -- creates a grid for our player animation
                                                                                                                           -- we need to define the width and height of our animation and the width and height of our spritesheet

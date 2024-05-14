@@ -70,6 +70,7 @@ function love.load()
 
     letterTexts = {"First letter", "Second letter", "Third letter", "Fourth letter", "Fifth letter", "Sixth letter", "Seventh letter", "Eight letter", "Nineth letter"}
 
+    table.insert(enemies, Enemy(700, 360))
 end
 
 -- special love function which is called repeatedly
