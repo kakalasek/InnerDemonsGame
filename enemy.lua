@@ -47,7 +47,7 @@ function Enemy:update(dt)
         isMoving = true
     end
 
-    self.collider:setLinearVelocity(vx, 200) -- moves the collider and sets the velocity of the movement .. in both directions
+    self.collider:setLinearVelocity(vx, 300) -- moves the collider and sets the velocity of the movement .. in both directions
 
     -- sets the x and y postion of the enemy according to its collider
     self.x = self.collider:getX()

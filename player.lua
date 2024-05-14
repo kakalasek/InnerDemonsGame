@@ -11,13 +11,15 @@ function Player:new() -- constructor for the Player object
     self.animHeight = 18
     self.scale = 3
 
+    self.armed = false
+
     -- creating a collider for the player
     self.collider = world:newRectangleCollider(100, 360, self.animWidth * self.scale, self.animHeight * self.scale) -- 'world' is an object created with the windfield library
                                                                                                                     -- this object adds gravity to the game
     self.collider:setCollisionClass('Player')
     self.collider:setFixedRotation(true) -- since we have a 2D game, we dont want our collider to rotate
 
-    self.speed = 1000 -- sets the speed of our player      *(was 200)*
+    self.speed = 2000 -- sets the speed of our player      *(was 200)*
 
     self.spriteSheet = love.graphics.newImage('textures/better-player-sheet.png')  -- load our spirtesheet into a property AKA variable AKA to hell with OOP
 
@@ -34,6 +36,13 @@ end
 
 -- update function for the Player object
 function Player:update(dt)
+
+    if self.collider:enter('Gun') then
+        self.spriteSheet = love.graphics.newImage('textures/better-player-sheet-with-gun.png')
+        self.armed = true
+        gunObject:destroy()
+    end
+
     local isMoving = false  -- so the player animation will stop after the player stops moving
 
     local vx = 0 -- so the player velocity in the x direction will reset to 0 if the player stops moving
@@ -49,7 +58,7 @@ function Player:update(dt)
         isMoving = true
     end
 
-    self.collider:setLinearVelocity(vx, 200) -- since the player is actually locked in the collider, we need to move the collider, not the player
+    self.collider:setLinearVelocity(vx, 300) -- since the player is actually locked in the collider, we need to move the collider, not the player
                                              -- first argument is the velocity in the x direction the second one in the y direction (so basically how fast will our player fall)
 
     if not isMoving then self.anim:gotoFrame(2) end -- if our player is not moving, we want to display this frame of our animation

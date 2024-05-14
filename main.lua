@@ -17,7 +17,8 @@ function love.load()
     world:addCollisionClass('Player') -- adds collision class for the player
     world:addCollisionClass('Enemy') -- adds collision class for the enemy
     world:addCollisionClass('Ghost', {ignores = {'Solid', 'Enemy', 'Player'}}) -- adds a collision class for abstract objects
-    world:addCollisionClass('Bullet', {ignores = {'Solid', 'Player', 'Enemy', 'Ghost'}})
+    world:addCollisionClass('Gun', {ignores = {'Solid', 'Enemy', 'Player'}})
+    world:addCollisionClass('Bullet', {ignores = {'Solid', 'Player', 'Enemy', 'Ghost', 'Gun'}})
 
     gameMap = sti('maps/GameMap.lua')  -- loads the game map (it is created using tiled, which can export the map into lua code, so it can be used here)
     
@@ -68,9 +69,16 @@ function love.load()
         end
     end
 
+    gunObject = nil
+    if gameMap.layers["GunObject"] then
+        obj = gameMap.layers["GunObject"].objects[1]
+        gunObject = world:newRectangleCollider(obj.x, obj.y, obj.width, obj.height)
+        gunObject:setType('static')
+        gunObject:setCollisionClass('Gun')
+    end
+
     letterTexts = {"First letter", "Second letter", "Third letter", "Fourth letter", "Fifth letter", "Sixth letter", "Seventh letter", "Eight letter", "Nineth letter"}
 
-    table.insert(enemies, Enemy(700, 360))
 end
 
 -- special love function which is called repeatedly
@@ -107,7 +115,7 @@ function love.update(dt)
             end
         end
 
-        if love.mouse.isDown(1) and bullet_delay <= 0 then
+        if love.mouse.isDown(1) and (bullet_delay <= 0) and (player.armed) then
             local mouse_x, mouse_y = cam:mousePosition()
 
             local angle = math.atan2((mouse_y - player.y), (mouse_x - player.x))
