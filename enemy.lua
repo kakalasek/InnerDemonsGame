@@ -15,7 +15,7 @@ function Enemy:new(x, y)    -- constructor for the Enemy object
     self.x = self.collider:getX()
     self.y = self.collider:getY()
 
-    self.speed = 200 -- setting the movement speed of the enemy
+    self.speed = 10 -- setting the movement speed of the enemy
 end
 
 -- update function for the Enemy object
@@ -38,6 +38,7 @@ function Enemy:update(dt)
     if self.collider:enter('Player') then
         gameState.deathScreen = true
         gameState.runningScreen = false
+        player.collider:destroy()
     end
 end
 

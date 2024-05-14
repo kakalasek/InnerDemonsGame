@@ -70,7 +70,6 @@ function love.load()
 
     letterTexts = {"First letter", "Second letter", "Third letter", "Fourth letter", "Fifth letter", "Sixth letter", "Seventh letter", "Eight letter", "Nineth letter"}
 
-    
 end
 
 -- special love function which is called repeatedly
@@ -86,6 +85,11 @@ function love.update(dt)
         
         for i, enemy in pairs(enemies) do
             enemy:update(dt)
+
+            if enemy.collider:enter('Bullet') then
+                table.remove(enemies, i)
+                enemy.collider:destroy()
+            end
         end
 
         for i, bullet in pairs(bullets) do
@@ -93,6 +97,12 @@ function love.update(dt)
             
             if math.abs(bullet.x - bullet.starting_x) >= bullet.disappear or math.abs(bullet.y - bullet.starting_y) >= bullet.disappear then
                 table.remove(bullets, i)
+                bullet.collider:destroy()
+            end
+
+            if bullet.collider:enter('Enemy') then
+                table.remove(bullets, i)
+                bullet.collider:destroy()
             end
         end
 
@@ -101,9 +111,9 @@ function love.update(dt)
 
             local angle = math.atan2((mouse_y - player.y), (mouse_x - player.x))
 
-            local velocity_x = 5000 * math.cos(angle)
+            local velocity_x = 12e3 * math.cos(angle)
 
-            local velocity_y = 5000 * math.sin(angle)
+            local velocity_y = 12e3 * math.sin(angle)
 
             table.insert(bullets, Bullet(player.x, player.y, velocity_x, velocity_y))
 
