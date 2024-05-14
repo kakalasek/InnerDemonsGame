@@ -17,6 +17,7 @@ function love.load()
     world:addCollisionClass('Player') -- adds collision class for the player
     world:addCollisionClass('Enemy') -- adds collision class for the enemy
     world:addCollisionClass('Ghost', {ignores = {'Solid', 'Enemy', 'Player'}}) -- adds a collision class for abstract objects
+    world:addCollisionClass('Bullet', {ignores = {'Solid', 'Player', 'Enemy', 'Ghost'}})
 
     gameMap = sti('maps/GameMap.lua')  -- loads the game map (it is created using tiled, which can export the map into lua code, so it can be used here)
     
@@ -81,7 +82,7 @@ function love.update(dt)
         world:update(dt)
         player:update(dt)
 
-        if bullet_delay ~= 0 then bullet_delay = bullet_delay - 1 end
+        if bullet_delay > 0 then bullet_delay = bullet_delay - 1 end
         
         for i, enemy in pairs(enemies) do
             enemy:update(dt)
@@ -95,18 +96,18 @@ function love.update(dt)
             end
         end
 
-        if love.mouse.isDown(1) and bullet_delay == 0 then
+        if love.mouse.isDown(1) and bullet_delay <= 0 then
             local mouse_x, mouse_y = cam:mousePosition()
 
             local angle = math.atan2((mouse_y - player.y), (mouse_x - player.x))
 
-            local velocity_x = 300 * math.cos(angle)
+            local velocity_x = 5000 * math.cos(angle)
 
-            local velocity_y = 300 * math.sin(angle)
+            local velocity_y = 5000 * math.sin(angle)
 
             table.insert(bullets, Bullet(player.x, player.y, velocity_x, velocity_y))
 
-            bullet_delay = bullet_delay + 60
+            bullet_delay = 60
         end
 
         cam:lookAt(player.x, player.y)
