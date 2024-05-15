@@ -21,7 +21,7 @@ function love.load()
     world:addCollisionClass('Bullet', {ignores = {'Solid', 'Player', 'Enemy', 'Ghost', 'Gun'}})
 
     gameMap = sti('maps/GameMap.lua')  -- loads the game map (it is created using tiled, which can export the map into lua code, so it can be used here)
-    
+
     gameState = {
         menuScreen = true,
         runningScreen = false,
@@ -70,7 +70,7 @@ function love.load()
     end
 
 
-    enemySpawns = {} 
+    enemySpawns = {}
     if gameMap.layers["EnemySpawns"] then    
         for i, obj in pairs(gameMap.layers["EnemySpawns"].objects) do
             local enemySpawn = world:newRectangleCollider(obj.x, obj.y, obj.width, obj.height)
@@ -95,7 +95,7 @@ function love.load()
     end
 
 
-    letterTexts = {"First letter", "Second letter", "Third letter", "Fourth letter", "Fifth letter", "Sixth letter", "Seventh letter", "Eight letter", "Nineth letter"}
+    letterTexts = {"First letter", "Second letter", "Third letter", "Fourth letter", "Fifth letter", "Sixth letter", "Seventh letter", "Eight letter", "Nineth letter\nPress 'e' to end the game"}
 
 end
 
@@ -157,6 +157,14 @@ function love.update(dt)
             bullet_delay = 60
         end
 
+
+        if (player.x >= letterObjects[9].x 
+            and player.x <= letterObjects[9].x + letterObjects[9].width) 
+            and (player.y >= letterObjects[9].y 
+            and player.y <= letterObjects[9].y + letterObjects[9].height) and love.keyboard.isDown('e') then
+                love.event.quit('restart')
+            end
+
         cam:lookAt(player.x, player.y)
     elseif gameState.deathScreen then
         if love.keyboard.isDown('e') then
@@ -206,8 +214,8 @@ function love.draw()
                 love.graphics.setColor(255, 255, 255, 1)    -- setting back the default alpha value, so only the background of the letter becomes transparent
                 love.graphics.printf({{0, 0, 0}, letterTexts[i]}, 100, 30, love.graphics.getWidth() - 200, 'left')  -- printing the letter onto the background
                                                                                                                     -- thanks to this function, the text will wrap itself .. also we are getting the texts from external files
-            end
         end
+    end
     elseif gameState.deathScreen then
         love.graphics.print("GAME OVER")
     end
