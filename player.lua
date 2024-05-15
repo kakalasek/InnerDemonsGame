@@ -19,7 +19,7 @@ function Player:new() -- constructor for the Player object
     self.collider:setCollisionClass('Player')
     self.collider:setFixedRotation(true) -- since we have a 2D game, we dont want our collider to rotate
 
-    self.speed = 2000 -- sets the speed of our player      *(was 200)*
+    self.speed = 300 -- sets the speed of our player      *(was 200)*
 
     self.spriteSheet = love.graphics.newImage('textures/better-player-sheet.png')  -- load our spirtesheet into a property AKA variable AKA to hell with OOP
 
@@ -58,7 +58,7 @@ function Player:update(dt)
         isMoving = true
     end
 
-    self.collider:setLinearVelocity(vx, 300) -- since the player is actually locked in the collider, we need to move the collider, not the player
+    self.collider:setLinearVelocity(vx, 500) -- since the player is actually locked in the collider, we need to move the collider, not the player
                                              -- first argument is the velocity in the x direction the second one in the y direction (so basically how fast will our player fall)
 
     if not isMoving then self.anim:gotoFrame(2) end -- if our player is not moving, we want to display this frame of our animation

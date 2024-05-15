@@ -69,6 +69,23 @@ function love.load()
         end
     end
 
+
+    enemySpawns = {} 
+    if gameMap.layers["EnemySpawns"] then    
+        for i, obj in pairs(gameMap.layers["EnemySpawns"].objects) do
+            local enemySpawn = world:newRectangleCollider(obj.x, obj.y, obj.width, obj.height)
+            enemySpawn:setType('static')
+            enemySpawn:setCollisionClass('Ghost')
+            -- letterObject itself does not hold any information about its position or dimensions .. since it is just a table, I can store them in it like this
+            enemySpawn.x = obj.x
+            enemySpawn.y = obj.y
+            enemySpawn.width = obj.width
+            enemySpawn.height = obj.height
+            table.insert(enemySpawns, enemySpawn)
+        end
+    end
+
+
     gunObject = nil
     if gameMap.layers["GunObject"] then
         obj = gameMap.layers["GunObject"].objects[1]
@@ -76,6 +93,7 @@ function love.load()
         gunObject:setType('static')
         gunObject:setCollisionClass('Gun')
     end
+
 
     letterTexts = {"First letter", "Second letter", "Third letter", "Fourth letter", "Fifth letter", "Sixth letter", "Seventh letter", "Eight letter", "Nineth letter"}
 
@@ -115,14 +133,24 @@ function love.update(dt)
             end
         end
 
-        if love.mouse.isDown(1) and (bullet_delay <= 0) and (player.armed) then
+        for i, enemySpawn in pairs(enemySpawns) do
+
+           if enemySpawn.x < player.x + 400 and math.abs(player.y - enemySpawn.y) <= 100 then
+                table.insert(enemies, Enemy(enemySpawn.x, enemySpawn.y))
+                table.remove(enemySpawns, i)
+                enemySpawn:destroy()
+            end
+        end
+
+        if love.mouse.isDown(1) and (bullet_delay <= 0) and (player.armed)
+        then
             local mouse_x, mouse_y = cam:mousePosition()
 
             local angle = math.atan2((mouse_y - player.y), (mouse_x - player.x))
 
-            local velocity_x = 12e3 * math.cos(angle)
+            local velocity_x = 36e3 * math.cos(angle)
 
-            local velocity_y = 12e3 * math.sin(angle)
+            local velocity_y = 36e3 * math.sin(angle)
 
             table.insert(bullets, Bullet(player.x, player.y, velocity_x, velocity_y))
 
