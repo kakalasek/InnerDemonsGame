@@ -19,7 +19,7 @@ function Player:new() -- constructor for the Player object
     self.collider:setCollisionClass('Player')
     self.collider:setFixedRotation(true) -- since we have a 2D game, we dont want our collider to rotate
 
-    self.speed = 300 -- sets the speed of our player      *(was 200)*
+    self.speed = 1000 -- sets the speed of our player      *(was 200)*
 
     self.spriteSheet = love.graphics.newImage('textures/better-player-sheet.png')  -- load our spirtesheet into a property AKA variable AKA to hell with OOP
 
