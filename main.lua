@@ -97,6 +97,9 @@ function love.load()
 
     letterTexts = {"First letter", "Second letter", "Third letter", "Fourth letter", "Fifth letter", "Sixth letter", "Seventh letter", "Eight letter", "Nineth letter\nPress 'e' to end the game"}
 
+    deathScreenFont = love.graphics.newFont(50)
+    deathScreenText = "GAME OVER\nPress E to restart";
+    deathScreenTextObject = love.graphics.newText(deathScreenFont, deathScreenText)
 end
 
 -- special love function which is called repeatedly
@@ -216,7 +219,9 @@ function love.draw()
                                                                                                                     -- thanks to this function, the text will wrap itself .. also we are getting the texts from external files
         end
     end
+        if player.armed then love.graphics.print('Press LEFT MOUSE button to shoot') end
     elseif gameState.deathScreen then
-        love.graphics.print("GAME OVER")
+        love.graphics.setFont(deathScreenFont)
+        love.graphics.print(deathScreenText, love.graphics.getWidth()/2 - deathScreenTextObject:getWidth()/2, love.graphics.getHeight()/2 - deathScreenTextObject:getHeight()/2 - 30)
     end
 end
