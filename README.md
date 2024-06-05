@@ -3,3 +3,5 @@ Controls -- _Because I am too lazy to make a saparate window for them in the gam
 A - Move Left   
 D - Move Right  
 MOUSE CLICK - Shoot -- _Only after you acquire a gun_
+
+__GAME INFO__
